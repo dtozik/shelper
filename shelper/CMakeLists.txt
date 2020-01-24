@@ -6,6 +6,7 @@ set (SOURCES
 		src/media_center/media_center.cpp
 		src/media_center/adapters/kodi_adapter.cpp
 		src/interop_mgr.cpp
+		src/subtitles/subtitles.cpp
 	)
 
 set (HEADERS 
@@ -15,11 +16,17 @@ set (HEADERS
 		src/media_center/adapters/kodi_adapter.h
 		src/interop_mgr.h
 		src/defs.h
+		src/output/output.h
+		src/output/adapters/console_output.h
+		src/time_routines.h
+		src/subtitles/subtitles.h
 	)
 
 include_directories(src 
 					src/media_center 
 					src/media_center/adapters
+					src/output
+					src/output/adapters
 					../common_libs/curlpp-0.8.1/include)
 
 message(STATUS "System: ${CMAKE_SYSTEM_NAME}")

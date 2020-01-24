@@ -2,6 +2,7 @@
 #define _MEDIA_CENTER_H_
 
 #include <defs.h>
+#include <time_routines.h>
 
 namespace shelper {
 namespace media_center {
@@ -10,6 +11,15 @@ struct player_info {
     unsigned int player_id;
 };
 
+
+struct track_info {
+    time::time_info     current_time;
+    time::time_info     total_time;
+    double              percentage;
+    double              speed;
+    bool                can_seek;
+    bool                can_change_speed;
+};
 
 class media_center_adapter {
 protected:
@@ -30,6 +40,7 @@ public:
 public:
     // control interface
     virtual bool get_player_info(player_info& info) { return false; };
+    virtual bool get_current_track_info(track_info& info, unsigned player_id) { return false; };
     
     virtual void play() = 0;
     virtual void pause() = 0;
