@@ -31,8 +31,9 @@ public:
     }
     
     bool find_sub(const media_center::track_info& ti, sub::subtitles_entry& entry);
-    void load_subtitles();
+    void load_subtitles(const std::string& file);
 };
+using interop_mgr_ptr = std::shared_ptr<interop_mgr>;
 
 }
 

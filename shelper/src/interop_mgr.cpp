@@ -2,7 +2,7 @@
 #include "interop_mgr.h"
 #include <media_center.h>
 #include <subtitles/subtitles.h>
-#include <output/output.h>
+#include <output.h>
 
 namespace shelper {
 
@@ -11,14 +11,17 @@ interop_mgr::interop_mgr() {
     m_subtitles.reset(new sub::subtitles());
 }
 
-void interop_mgr::load_subtitles() {
-    m_subtitles->load_srt("");
+void interop_mgr::load_subtitles(const std::string& file) {
+    m_subtitles->load_srt(file);
 }
 
 bool interop_mgr::find_sub(const media_center::track_info& ti, sub::subtitles_entry& entry) {
     
     unsigned start = 0;
     unsigned end = m_subtitles->m_entries.size();
+    if (end == 0)
+        return false;
+    
     unsigned cur = 0;
     unsigned last_cur = std::numeric_limits<unsigned>::max();
 
@@ -65,7 +68,8 @@ void interop_mgr::handle_timer(long time_ms) {
                     static unsigned last_sub_id = std::numeric_limits<unsigned>::max();
                     if (sub.s_id != last_sub_id) {
                      
-                        m_output->set_text(sub.text);
+                        if (m_output)
+                            m_output->set_text(sub.text);
                         last_sub_id = sub.s_id;
                     }
                 }

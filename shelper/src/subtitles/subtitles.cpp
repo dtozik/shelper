@@ -7,10 +7,11 @@ namespace shelper {
 namespace sub {
 
 
-void subtitles::load_srt(const std::string& s) {
+void subtitles::load_srt(const std::string& sub) {
 
-    std::string sub = "/Users/DmitryT/dev/shelper/shelper/1.srt";
-
+    //std::string sub = "/Users/admin/dev/shelper/shelper/1.srt";
+    
+    
     m_entries.clear();
     m_entries.reserve(2500);
     

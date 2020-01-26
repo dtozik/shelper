@@ -1,26 +1,26 @@
-# Add executable called "helloDemo" that is built from the source files
-# "demo.cxx" and "demo_b.cxx". The extensions are automatically found.
 
-set (SOURCES 
-		src/main.cpp
+set (SOURCES_GROUP_FILES
 		src/media_center/media_center.cpp
 		src/media_center/adapters/kodi_adapter.cpp
 		src/interop_mgr.cpp
 		src/subtitles/subtitles.cpp
 	)
 
-set (HEADERS 
+set (HEADERS_GROUP_FILES
 		src/json.hpp
 		src/ctpl_stl.h
 		src/media_center/media_center.h
 		src/media_center/adapters/kodi_adapter.h
 		src/interop_mgr.h
 		src/defs.h
-		src/output/output.h
-		src/output/adapters/console_output.h
+		src/output.h
 		src/time_routines.h
 		src/subtitles/subtitles.h
 	)
+
+set(SOURCES ${SOURCES} ${SOURCES_GROUP_FILES})
+set(HEADERS ${HEADERS} ${HEADERS_GROUP_FILES})	
+
 
 include_directories(src 
 					src/media_center 
@@ -29,16 +29,59 @@ include_directories(src
 					src/output/adapters
 					../common_libs/curlpp-0.8.1/include)
 
+
+if(TARGET_PLATFORM_OSX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++")
+
+	set (SOURCES_GROUP_FILES
+		src/platform/osx/AppDelegate.mm
+		src/platform/osx/main.mm
+		src/platform/osx/ViewController.mm
+		src/platform/osx/AppDelegate.h
+		src/platform/osx/ViewController.h
+	)	
+
+
+	set(SOURCES ${SOURCES} ${SOURCES_GROUP_FILES})
+	source_group(platform FILES ${SOURCES_GROUP_FILES})
+
+	set (RESOURCES ${RESOURCES} 
+		src/platform/osx/Assets.xcassets
+		src/platform/osx/Base.lproj/Main.storyboard
+		src/platform/osx/shelper.entitlements)
+
+	set_source_files_properties(
+	 	${RESOURCES}
+	 	PROPERTIES
+	 	MACOSX_PACKAGE_LOCATION Resources)
+
+	set(CMAKE_EXE_LINKER_FLAGS "-framework AppKit")
+	add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${HEADERS} ${SOURCES} ${RESOURCES})
+
+	set_target_properties(${PROJECT_NAME} PROPERTIES
+	  #MACOSX_BUNDLE_GUI_IDENTIFIER ${PACKAGE_NAME}
+	  MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/osx/Info.plist
+	  RESOURCE "${RESOURCES}"
+	  XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES 
+	  XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym"
+	  XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER NO
+	  XCODE_ATTRIBUTE_INFOPLIST_PREPROCESS NO
+	)
+
+else()
+	set(SOURCES ${SOURCES} src/main.cpp)
+
+	add_executable(shelper ${SOURCES} ${HEADERS} ${RESOURCES})
+endif()
+
+
 message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
-
-add_executable(shelper ${SOURCES} ${HEADERS})
-
 
 set (STATIC_LIBRARIES ${LIB_DIR}/libcurlpp.a
 					  ${LIB_DIR}/libcurl.a
 					  ${LIB_DIR}/libzlib.a)
 
-target_link_libraries(shelper ${STATIC_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${STATIC_LIBRARIES})
 
 
 

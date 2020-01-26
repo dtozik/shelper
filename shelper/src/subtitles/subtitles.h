@@ -23,7 +23,7 @@ class subtitles {
 public:
     subtitles_entries_t m_entries;
 public:
-    void load_srt(const std::string& s);
+    void load_srt(const std::string& sub);
 };
 using subtitles_ptr = std::shared_ptr<subtitles>;
 

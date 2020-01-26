@@ -3,6 +3,7 @@
 
 #include <defs.h>
 #include <time_routines.h>
+#include <regex>
 
 namespace shelper {
 namespace media_center {
@@ -33,8 +34,17 @@ public:
     virtual ~media_center_adapter() {}
     
 public:
-    void set_host(const std::string& host, unsigned port) {
-        m_server_path = std::make_pair(host, port);
+    void set_host(const std::string& host) {
+        std::regex reg(":");
+        std::regex_token_iterator<std::string::const_iterator> iter(host.begin(), host.end(), reg, -1);
+        std::regex_token_iterator<std::string::const_iterator> end;
+        
+        m_server_path.first = *iter++;
+        auto v = iter->str();
+        std::stringstream s(v);
+        unsigned val;
+        s >> val;
+        m_server_path.second = val;
     }
     
 public:

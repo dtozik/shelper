@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.11)
-project (SHELPER)
+project (shelper)
 
 
 set (LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build/projects/libs)
