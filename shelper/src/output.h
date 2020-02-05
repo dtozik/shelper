@@ -8,16 +8,26 @@ namespace output {
 
 class base_output {
 public:
+    virtual ~base_output() = default;
     virtual void set_text(const std::string& text) = 0;
+    virtual void set_translation(const std::string& text) = 0;
 };
 using output_ptr = std::shared_ptr<base_output>;
 
 
 class console_output : public base_output {
 public:
-    void set_text(const std::string& text) {
+    virtual ~console_output() = default;
+    void set_text(const std::string& text) override {
+        std::cout << ">>>>> subtitles" << std::endl;
         std::cout << text << std::endl;
-        std::cout << "----------------------" << std::endl;
+        std::cout << "<<<<< subtitles" << std::endl;
+    }
+
+    void set_translation(const std::string& text) override {
+        std::cout << ">>>>> translation" << std::endl;
+        std::cout << text << std::endl;
+        std::cout << "<<<<< translation" << std::endl;
     }
 };
 

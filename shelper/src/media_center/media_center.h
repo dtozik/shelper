@@ -9,7 +9,7 @@ namespace shelper {
 namespace media_center {
 
 struct player_info {
-    unsigned int player_id;
+    unsigned player_id;
 };
 
 
@@ -36,12 +36,11 @@ public:
 public:
     void set_host(const std::string& host) {
         std::regex reg(":");
-        std::regex_token_iterator<std::string::const_iterator> iter(host.begin(), host.end(), reg, -1);
-        std::regex_token_iterator<std::string::const_iterator> end;
+        using regex_iter_t = std::regex_token_iterator<std::string::const_iterator>;
+        regex_iter_t iter(host.begin(), host.end(), reg, -1);
         
         m_server_path.first = *iter++;
-        auto v = iter->str();
-        std::stringstream s(v);
+        std::stringstream s(iter->str());
         unsigned val;
         s >> val;
         m_server_path.second = val;
@@ -49,8 +48,8 @@ public:
     
 public:
     // control interface
-    virtual bool get_player_info(player_info& info) { return false; };
-    virtual bool get_current_track_info(track_info& info, unsigned player_id) { return false; };
+    virtual bool get_player_info(player_info& info) const { return false; };
+    virtual bool get_current_track_info(track_info& info, unsigned player_id) const { return false; };
     
     virtual void play() = 0;
     virtual void pause() = 0;

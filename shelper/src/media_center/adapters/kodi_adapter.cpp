@@ -12,13 +12,8 @@ namespace shelper {
 namespace media_center {
 
 
-
-//std::string g_commands[] = {  };
-
 void kodi_adapter::play() {
-    
 }
-
 void kodi_adapter::pause() {
 }
 void kodi_adapter::stop() {
@@ -26,7 +21,7 @@ void kodi_adapter::stop() {
 void kodi_adapter::seek() {
 }
 
-bool kodi_adapter::get_player_info(player_info& info) {
+bool kodi_adapter::get_player_info(player_info& info) const {
     //{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}
     // curl -s --data-binary '{"jsonrpc":"2.0", "method":"Player.Seek", "params": { "playerid":1, "value":{"hours":0,"milliseconds":0,"minutes":20,"seconds":0} }, "id":1}' -H 'content-type: application/json;' http://192.168.1.181:3369/jsonrpc
     
@@ -66,7 +61,7 @@ bool kodi_adapter::get_player_info(player_info& info) {
         }
     }
     catch ( std::exception& e ) {
-        std::cout << e.what() << std::endl;
+        std::cout << "coudn't get kodi_adapter::get_player_info, exception: " << e.what() << std::endl;
         return false;
     }
     
@@ -74,7 +69,7 @@ bool kodi_adapter::get_player_info(player_info& info) {
 };
 
 
-bool kodi_adapter::get_current_track_info(track_info& info, unsigned player_id) {
+bool kodi_adapter::get_current_track_info(track_info& info, unsigned player_id) const {
 
 //    curl -s --data '{"jsonrpc":"2.0", "method":"Player.GetProperties", "params": { "playerid":1, "properties":["type",
 //    "speed",
@@ -130,7 +125,7 @@ bool kodi_adapter::get_current_track_info(track_info& info, unsigned player_id) 
         info.total_time.hours = std::chrono::hours(time["hours"]);
     }
     catch ( std::exception& e ) {
-        std::cout << e.what() << std::endl;
+        std::cout << "coudn't get kodi_adapter::get_current_track_info, exception: " << e.what() << std::endl;
         return false;
     }
     

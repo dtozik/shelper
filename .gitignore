@@ -2,3 +2,4 @@
 *.pbxproj
 build/projects
 .DS_Store
+common_libs/openssl

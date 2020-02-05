@@ -9,17 +9,18 @@
 #import <Cocoa/Cocoa.h>
 #import <interop_mgr.h>
 
-@interface ViewController : NSViewController
+@interface ViewController : NSViewController<NSTextFieldDelegate>
 {
     shelper::interop_mgr_ptr m_interop_ptr;
     shelper::media_center::media_center_adapter_ptr m_mc;
+    NSMutableArray<NSButton*>* m_words_buttons;
 }
 
-@property (weak) IBOutlet NSTextFieldCell *m_host;
-@property (weak) IBOutlet NSTextField *m_subtView;
+@property (weak) IBOutlet NSStackView *m_vertStackSub;
 
--(void) onSubtitleText:(NSString*)text;
-
-
+-(void)onSubtitleText:(NSString*)text;
+-(void)onTranslateText:(NSString*)text;
+-(void)onSrtFileSelected:(NSString*)file;
+-(void)onHostChanged:(NSString*)host;
 @end
 

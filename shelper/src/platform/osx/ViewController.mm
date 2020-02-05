@@ -21,6 +21,10 @@ public:
     void set_text(const std::string& text) override {
         [m_ctrl onSubtitleText:[NSString stringWithUTF8String:text.c_str()]];
     }
+    
+    void set_translation(const std::string& text) override {
+        [m_ctrl onTranslateText:[NSString stringWithUTF8String:text.c_str()]];
+    }
 };
 
 @implementation ViewController
@@ -36,9 +40,6 @@ public:
     //till they reel someone in.";
 }
 
--(void) onSubtitleText:(NSString*)text {
-    self.m_subtView.stringValue = text;
-}
      
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -50,13 +51,15 @@ public:
     m_mc = std::make_shared<media_center::kodi_adapter>();
     m_interop_ptr->set_media_center(m_mc);
     
-    m_mc->set_host([self.m_host.stringValue UTF8String]);
+    m_mc->set_host("localhost:1234");
             
     [NSTimer scheduledTimerWithTimeInterval:0.05
       target:self
     selector:@selector(onTimer)
     userInfo:nil
      repeats:YES];
+    
+    m_words_buttons = [[NSMutableArray alloc] init];
 }
 
 
@@ -66,33 +69,90 @@ public:
     // Update the view, if already loaded.
 }
 
-- (void) openFiles
-{
-    NSOpenPanel* panel = [NSOpenPanel openPanel];
-    [panel setPrompt:@"Select subtitles"];
-    NSArray* fileTypes = [NSArray arrayWithObjects:@"srt",nil];
-    [panel setAllowedFileTypes:fileTypes];
+-(void)onTranslateText:(NSString*)text {
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:@"Translator"];
+    [alert setInformativeText:text];
+    [alert addButtonWithTitle:@"Ok"];
+    [alert runModal];
+}
 
-    [panel setAllowsMultipleSelection:NO];
-    [panel setCanChooseDirectories:NO];
-    [panel setCanChooseFiles:YES];
-    [panel setFloatingPanel:NO];
+
+-(void)onSubtitleText:(NSString*)text {
+
+    text = [text stringByReplacingOccurrencesOfString:@"\r" withString:@"\r "];
+    text = [text substringToIndex:[text length]-1];
     
-    [panel beginWithCompletionHandler:^(NSInteger result){
-        NSArray* files = [panel URLs];
-        NSURL* u =  [files objectAtIndex:0];
-        m_interop_ptr->load_subtitles([u.path UTF8String]);
+    NSArray<NSString*>* array = [text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    //array = [array filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
+    
+    [m_words_buttons removeAllObjects];
+    [self.m_vertStackSub.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+    
+    NSStackView* curHorizStackView = [[NSStackView alloc] init];
+    curHorizStackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    curHorizStackView.distribution = NSStackViewDistributionFillProportionally;
+    curHorizStackView.alignment = NSLayoutAttributeCenterY;
+    [self.m_vertStackSub addView:curHorizStackView inGravity:NSStackViewGravityCenter];
+    
+    for (int i = 0; i < [array count]; ++i) {
+        NSString* str = [array objectAtIndex:i];
         
-    }];
+        NSButton* button = nil;
+        button = [[NSButton alloc] init];
+        button.bezelStyle = NSBezelStyleRegularSquare;
+        [button setButtonType:NSButtonTypePushOnPushOff];
+        
+        button.title = str;
+        [curHorizStackView addView:button inGravity:NSStackViewGravityCenter];
+        
+        [m_words_buttons addObject:button];
+        //[button setAction:@selector(onBtnWordTap:)];
+        //[button setTarget:self];
+        
+        if ([str containsString:@"\r"]) {
+            NSString* s = [str stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+            button.title = s;
+           
+            curHorizStackView = [[NSStackView alloc] init];
+            curHorizStackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+            curHorizStackView.distribution = NSStackViewDistributionFillProportionally;
+            curHorizStackView.alignment = NSLayoutAttributeCenterY;
+            
+            if (i < [array count]-1)
+                [self.m_vertStackSub addView:curHorizStackView inGravity:NSStackViewGravityCenter];
+        }
+
+        
+        
+        
+        //[self. addView:button inGravity:NSStackViewGravityCenter];
+    }
+    
+    
 }
 
-- (IBAction)hostAction:(NSTextFieldCell *)sender {
-    
-    m_mc->set_host([sender.stringValue UTF8String]);
-    
-}
-- (IBAction)onBtnLoadSbtFromFile:(NSButton *)sender {
-    [self openFiles];
+
+-(void)onHostChanged:(NSString*)host {
+    m_mc->set_host([host UTF8String]);
 }
 
+-(void)onSrtFileSelected:(NSString*)file {
+    m_interop_ptr->load_subtitles([file UTF8String]);
+}
+- (IBAction)onBtnTranslate:(NSButton *)sender {
+    std::string s;
+    int counter = 0;
+    for (NSButton* button in m_words_buttons) {
+        if (button.state == NSControlStateValueOn) {
+            if (counter == 1) {
+                s += ' ';
+            }
+            s += [button.title UTF8String];
+            counter++;
+        }
+    }
+    
+    m_interop_ptr->on_select_text(s);
+}
 @end

@@ -1,9 +1,9 @@
 
 set (SOURCES_GROUP_FILES
-		src/media_center/media_center.cpp
 		src/media_center/adapters/kodi_adapter.cpp
 		src/interop_mgr.cpp
 		src/subtitles/subtitles.cpp
+		src/translator/adapters/lingualeo.cpp
 	)
 
 set (HEADERS_GROUP_FILES
@@ -16,6 +16,8 @@ set (HEADERS_GROUP_FILES
 		src/output.h
 		src/time_routines.h
 		src/subtitles/subtitles.h
+		src/view.h
+		src/translator/translator.h
 	)
 
 set(SOURCES ${SOURCES} ${SOURCES_GROUP_FILES})
@@ -27,10 +29,12 @@ include_directories(src
 					src/media_center/adapters
 					src/output
 					src/output/adapters
+					src/translator
+					src/translator/adapters
 					../common_libs/curlpp-0.8.1/include)
 
 
-if(TARGET_PLATFORM_OSX)
+if(TARGET_COCOA)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++")
 
 	set (SOURCES_GROUP_FILES
@@ -39,6 +43,8 @@ if(TARGET_PLATFORM_OSX)
 		src/platform/osx/ViewController.mm
 		src/platform/osx/AppDelegate.h
 		src/platform/osx/ViewController.h
+		src/platform/osx/SettingsViewController.h
+		src/platform/osx/SettingsViewController.mm
 	)	
 
 
@@ -79,7 +85,10 @@ message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
 
 set (STATIC_LIBRARIES ${LIB_DIR}/libcurlpp.a
 					  ${LIB_DIR}/libcurl.a
-					  ${LIB_DIR}/libzlib.a)
+					  ${LIB_DIR}/libzlib.a
+					  # ${LIB_DIR}/libcrypto.a
+					  # ${LIB_DIR}/libssl.a
+					  )
 
 target_link_libraries(${PROJECT_NAME} ${STATIC_LIBRARIES})
 

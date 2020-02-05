@@ -32,7 +32,7 @@ fi
 cd $PLATFORM_NAME
 
 if [[ $BUILD_OSX == 1 ]]; then
-    cmake ../../../ -G "Xcode" -DTARGET_PLATFORM_OSX=1
+    cmake ../../../ -G "Xcode" #-DTARGET_COCOA=1
 fi
 
 

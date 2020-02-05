@@ -15,15 +15,22 @@ struct subtitles_entry {
     std::string text;
     unsigned s_id;
 };
+using subtitles_entry_ptr = std::shared_ptr<subtitles_entry>;
+using subtitles_entries_t = std::vector<subtitles_entry_ptr>;
 
-using subtitles_entries_t = std::vector<subtitles_entry>;
 
-
-class subtitles {
-public:
+class subtitles final {
     subtitles_entries_t m_entries;
 public:
-    void load_srt(const std::string& sub);
+    bool load_srt(const std::string& sub);
+    subtitles_entry_ptr get_entry(size_t ind) const {
+        return m_entries[ind];
+    }
+    
+    size_t count() const {
+        return m_entries.size();
+    }
+
 };
 using subtitles_ptr = std::shared_ptr<subtitles>;
 

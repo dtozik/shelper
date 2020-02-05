@@ -8,6 +8,8 @@ set(CURL_LIBRARIES libcurl.a)
 
 include_directories(${CURL_DIR}/include) #openssl headers
 include_directories(${CURL_DIR}/include/curl) #curl_config
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../openssl/openssl-1.1.1b/include) #curl_config
+
 
 
 	set(SOURCE_FILES ${SOURCE_FILES}
@@ -128,7 +130,7 @@ include_directories(${CURL_DIR}/include/curl) #curl_config
 	${CURL_DIR}/lib/vauth/ntlm.c
 	)
 
-if(NOT WIN32 AND NOT SQ_BUILD_PLATFORM_WPHONE AND NOT SQ_BUILD_PLATFORM_WSTORE)
+if(TRUE) #NOT WIN32 AND NOT SQ_BUILD_PLATFORM_WPHONE AND NOT SQ_BUILD_PLATFORM_WSTORE)
     INCLUDE (CheckTypeSize) 
 	if (NOT IOS_PLATFORM)
     check_type_size(size_t  SIZEOF_SIZE_T)
@@ -270,14 +272,9 @@ endif (MINGW)
 
 add_definitions(-DBUILDING_LIBCURL=1)
 
-if (SQ_OPENSSL)
-	if (BUILD_PLATFORM_X86 AND NOT WIN32)
-		add_definitions(-DUSE_OPENSSL -DUSE_SSLEAY)
-	elseif(ANDROID)
-		add_definitions(-DUSE_OPENSSL -DUSE_SSLEAY)
-	elseif(SQ_BUILD_PLATFORM_IPHONE)
-		add_definitions(-DUSE_OPENSSL -DUSE_SSLEAY)
-	endif()
+if (USE_OPENSSL)
+	message (STATUS "USE_OPENSSL")
+	add_definitions(-DUSE_OPENSSL -DUSE_SSLEAY)
 endif()
 
 # setup curl target

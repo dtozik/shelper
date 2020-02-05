@@ -32,6 +32,20 @@ rm -rf common_libs
 
 CUR_DIR=$PWD
 
+######### openssl ######### 
+
+# if [ ! -d common_libs/$PLATFORM_NAME/openssl ]; then
+#     mkdir -p common_libs/$PLATFORM_NAME/openssl 
+# fi    
+# #cd common_libs/$PLATFORM_NAME/openssl
+# cd ../../common_libs/openssl
+# ./openssl-build.sh
+
+# #cmake ../../../../../common_libs/curl -DUSE_OPENSSL=1
+# #make || exit 1
+# #cp -rf *.a $LIBS
+# cd $CUR_DIR
+
 ######### curl ######### 
 
 if [ ! -d common_libs/$PLATFORM_NAME/curl ]; then
@@ -39,7 +53,7 @@ if [ ! -d common_libs/$PLATFORM_NAME/curl ]; then
 fi    
 cd common_libs/$PLATFORM_NAME/curl
 
-cmake ../../../../../common_libs/curl
+cmake ../../../../../common_libs/curl #-DUSE_OPENSSL=1
 make || exit 1
 cp -rf *.a $LIBS
 cd $CUR_DIR
@@ -55,7 +69,7 @@ make || exit 1
 cp -rf *.a $LIBS
 cd $CUR_DIR
 
-######### zlib-1.2.5 #########
+########## zlib-1.2.5 #########
 if [ ! -d common_libs/$PLATFORM_NAME/zlib ]; then
     mkdir -p common_libs/$PLATFORM_NAME/zlib 
 fi    
