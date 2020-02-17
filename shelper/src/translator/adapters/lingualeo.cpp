@@ -16,7 +16,7 @@ namespace shelper { namespace translator {
          // Creation of the URL option.
          curlpp::Easy c;
          std::string request("https://api.lingualeo.com/gettranslates?word=");
-         request += cfg.word;
+         request += curlpp::escape(cfg.word);
          c.setOpt(new curlpp::options::Url(request));
          c.setOpt(new curlpp::options::SslVerifyPeer(false));
          
@@ -29,7 +29,7 @@ namespace shelper { namespace translator {
          return true;
      }
      catch ( std::exception& e ) {
-         std::cout << "coundn't get tarnsalation from lingualeo_translator, exception: " << e.what() << std::endl;
+         std::cout << "couldn't get tarnsalation from lingualeo_translator, exception: " << e.what() << std::endl;
          clbs.error(-1);
          return false;
      }

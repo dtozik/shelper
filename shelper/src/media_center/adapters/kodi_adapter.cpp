@@ -12,13 +12,57 @@ namespace shelper {
 namespace media_center {
 
 
-void kodi_adapter::play() {
+bool kodi_adapter::play() const {
+    // {"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": 0 }, "id": 1}
+    player_info pi;
+    if (!get_player_info(pi)) {
+        std::cout << "kodi_adapter::play coundn't get get_player_info" << std::endl;
+        return false;
+    }
+    
+    try {
+        curlpp::Cleanup cleaner;
+        curlpp::Easy request;
+        request.setOpt(new curlpp::options::Url(m_server_path.first + "/jsonrpc"));
+        request.setOpt(new curlpp::options::Port(m_server_path.second));
+
+        std::list<std::string> header;
+        header.push_back("content-type: application/json");
+        request.setOpt(new curlpp::options::HttpHeader(header));
+        {
+            json j;
+            j["jsonrpc"] = "2.0";
+            j["method"] = "Player.PlayPasuse";
+            json params;
+            params["playerid"] = pi.player_id;
+            j["params"] = params;
+            j["id"] = "1";
+            std::string field(j.dump());
+            request.setOpt(new curlpp::options::PostFields(field));
+            request.setOpt(new curlpp::options::PostFieldSize(field.size() + 1));
+        }
+        std::ostringstream os;
+        os << request;
+        json j = json::parse(os.str());
+        if (j.contains("error")) {
+            throw std::runtime_error(j["error"]["message"]);
+        }
+    }
+    catch ( std::exception& e ) {
+        std::cout << "coudn't get kodi_adapter::get_current_track_info, exception: " << e.what() << std::endl;
+        return false;
+    }
+    
+    return true;
 }
-void kodi_adapter::pause() {
+bool kodi_adapter::pause() const {
+    return play();
 }
-void kodi_adapter::stop() {
+bool kodi_adapter::stop() const {
+    return false;
 }
-void kodi_adapter::seek() {
+bool kodi_adapter::seek() const {
+    return false;
 }
 
 bool kodi_adapter::get_player_info(player_info& info) const {
@@ -37,7 +81,7 @@ bool kodi_adapter::get_player_info(player_info& info) const {
         //request.setOpt(new curlpp::options::Verbose(true));
 
         std::list<std::string> header;
-        header.push_back("content-type: application/json");
+        header.emplace_back("content-type: application/json");
         request.setOpt(new curlpp::options::HttpHeader(header));
         {
             json j;
@@ -52,6 +96,10 @@ bool kodi_adapter::get_player_info(player_info& info) const {
         std::ostringstream os;
         os << request;
         json j = json::parse(os.str());
+        if (j.contains("error")) {
+            throw std::runtime_error(j["error"]["message"]);
+        }
+        
         for (auto& player : j["result"]) {
             if (player["type"] == "video") {
                 info.player_id = player["playerid"];
@@ -69,7 +117,7 @@ bool kodi_adapter::get_player_info(player_info& info) const {
 };
 
 
-bool kodi_adapter::get_current_track_info(track_info& info, unsigned player_id) const {
+bool kodi_adapter::get_current_track_info(track_info& info) const {
 
 //    curl -s --data '{"jsonrpc":"2.0", "method":"Player.GetProperties", "params": { "playerid":1, "properties":["type",
 //    "speed",
@@ -78,6 +126,11 @@ bool kodi_adapter::get_current_track_info(track_info& info, unsigned player_id) 
 //    "totaltime",
 //    "canseek",
 //    "canchangespeed"] }, "id":"qq"}' -H 'content-type: application/json;' localhost:1234/jsonrpc
+    player_info pi;
+    if (!get_player_info(pi)) {
+       std::cout << "kodi_adapter::get_current_track_info coundn't get get_player_info" << std::endl;
+       return false;
+    }
     
     try {
         curlpp::Cleanup cleaner;
@@ -94,7 +147,7 @@ bool kodi_adapter::get_current_track_info(track_info& info, unsigned player_id) 
             j["jsonrpc"] = "2.0";
             j["method"] = "Player.GetProperties";
             json params;
-            params["playerid"] = m_cached_player_id;
+            params["playerid"] = pi.player_id;
             params["properties"] = { "type", "speed", "time", "percentage", "totaltime", "canseek", "canchangespeed" };
             j["params"] = params;
             j["id"] = "1";
@@ -106,6 +159,10 @@ bool kodi_adapter::get_current_track_info(track_info& info, unsigned player_id) 
         std::ostringstream os;
         os << request;
         json j = json::parse(os.str());
+        if (j.contains("error")) {
+            throw std::runtime_error(j["error"]["message"]);
+        }
+        
         json result = json::parse(os.str())["result"];
         info.can_seek = result["canseek"];
         info.can_change_speed = result["canchangespeed"];
@@ -125,7 +182,7 @@ bool kodi_adapter::get_current_track_info(track_info& info, unsigned player_id) 
         info.total_time.hours = std::chrono::hours(time["hours"]);
     }
     catch ( std::exception& e ) {
-        std::cout << "coudn't get kodi_adapter::get_current_track_info, exception: " << e.what() << std::endl;
+        std::cout << "couldn't get kodi_adapter::get_current_track_info, exception: " << e.what() << std::endl;
         return false;
     }
     

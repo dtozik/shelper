@@ -14,6 +14,16 @@ void interop_mgr::init() {
     m_translator = std::make_shared<translator::lingualeo_translator>();
 }
 
+void interop_mgr::on_pause() {
+    m_mc_adapter->pause();
+}
+void interop_mgr::on_resume() {
+    m_mc_adapter->play();
+}
+void interop_mgr::on_seek() {
+    
+}
+
 void interop_mgr::on_select_text(const std::string& text) {
     //on_pause();
     if (m_translator && m_output) {
@@ -37,7 +47,8 @@ void interop_mgr::load_subtitles(const std::string& file) {
 sub::subtitles_entry_ptr interop_mgr::find_sub(const media_center::track_info& ti) const {
     
     if (!m_subtitles)
-        throw std::runtime_error("subtitles is null or empty");
+        return nullptr;
+        
 
     unsigned start = 0;
     unsigned end = m_subtitles->count();
@@ -84,21 +95,17 @@ void interop_mgr::handle_timer(long time_ms) {
     if (time_counter >= 50) {
         time_counter = 0;
     
-        media_center::player_info i;
-        if (m_mc_adapter->get_player_info(i)) {
+        media_center::track_info ti;
+        if (m_mc_adapter->get_current_track_info(ti)) {
             
-            media_center::track_info ti;
-            if (m_mc_adapter->get_current_track_info(ti, i.player_id)) {
-                
-                sub::subtitles_entry_ptr sub = find_sub(ti);
-                if (sub) {
-                    static unsigned last_sub_id = std::numeric_limits<unsigned>::max();
-                    if (sub->s_id != last_sub_id) {
-                     
-                        if (m_output)
-                            m_output->set_text(sub->text);
-                        last_sub_id = sub->s_id;
-                    }
+            sub::subtitles_entry_ptr sub = find_sub(ti);
+            if (sub) {
+                static unsigned last_sub_id = std::numeric_limits<unsigned>::max();
+                if (sub->s_id != last_sub_id) {
+                 
+                    if (m_output)
+                        m_output->set_text(sub->text);
+                    last_sub_id = sub->s_id;
                 }
             }
         }

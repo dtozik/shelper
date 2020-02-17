@@ -49,12 +49,12 @@ public:
 public:
     // control interface
     virtual bool get_player_info(player_info& info) const { return false; };
-    virtual bool get_current_track_info(track_info& info, unsigned player_id) const { return false; };
+    virtual bool get_current_track_info(track_info& info) const { return false; };
     
-    virtual void play() = 0;
-    virtual void pause() = 0;
-    virtual void stop() = 0;
-    virtual void seek() = 0;
+    virtual bool play() const = 0;
+    virtual bool pause() const = 0;
+    virtual bool stop() const = 0;
+    virtual bool seek() const = 0;
 };
 using media_center_adapter_ptr = std::shared_ptr<media_center_adapter>;
 

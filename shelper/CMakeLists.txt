@@ -86,8 +86,8 @@ message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
 set (STATIC_LIBRARIES ${LIB_DIR}/libcurlpp.a
 					  ${LIB_DIR}/libcurl.a
 					  ${LIB_DIR}/libzlib.a
-					  # ${LIB_DIR}/libcrypto.a
-					  # ${LIB_DIR}/libssl.a
+					  ${LIB_DIR}/libcrypto.a
+					  ${LIB_DIR}/libssl.a
 					  )
 
 target_link_libraries(${PROJECT_NAME} ${STATIC_LIBRARIES})

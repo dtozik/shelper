@@ -1,18 +1,14 @@
 #!/bin/bash
 
-BUILD_OSX=0
-BUILD_LINUX=0
 LIBS=
-
-PLATFORM_NAME=
+PLATFORM=
+TARGET_PLATFORM="osx"
 
 echo "detected OS: $OSTYPE"
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    BUILD_OSX=1
-    PLATFORM_NAME="osx"
+    PLATFORM="osx"
 elif [[ "$OSTYPE" == "linux"* ]]; then
-    BUILD_LINUX=1
-    PLATFORM_NAME="linux"
+    PLATFORM="linux"
 else
     echo "coundn't detect ostype" && exit 1
 fi
@@ -24,15 +20,14 @@ fi
 
 cd projects
 
-
-if [ ! -d $PLATFORM_NAME ]; then
-    mkdir $PLATFORM_NAME 
+if [ ! -d $TARGET_PLATFORM ]; then
+    mkdir $TARGET_PLATFORM 
 fi
 
-cd $PLATFORM_NAME
+cd $TARGET_PLATFORM
 
-if [[ $BUILD_OSX == 1 ]]; then
-    cmake ../../../ -G "Xcode" #-DTARGET_COCOA=1
+if [[ $PLATFORM == "osx" ]]; then
+    cmake ../../../ -G "Xcode" -DTARGET_COCOA=1
 fi
 
 

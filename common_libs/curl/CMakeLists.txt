@@ -8,7 +8,7 @@ set(CURL_LIBRARIES libcurl.a)
 
 include_directories(${CURL_DIR}/include) #openssl headers
 include_directories(${CURL_DIR}/include/curl) #curl_config
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../openssl/openssl-1.1.1b/include) #curl_config
+include_directories(${OPENSSL_DIR}/include) #curl_config
 
 
 

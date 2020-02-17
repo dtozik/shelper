@@ -45,7 +45,7 @@ public:
     [super viewDidLoad];
     
     m_interop_ptr.reset(new interop_mgr());
-    
+    m_interop_ptr->init();
     m_interop_ptr->set_output(std::make_shared<ios_output>(self));
     
     m_mc = std::make_shared<media_center::kodi_adapter>();
@@ -77,6 +77,9 @@ public:
     [alert runModal];
 }
 
+-(void)onBtnWordTap:(NSButton*)btn {
+    m_interop_ptr->on_pause();
+}
 
 -(void)onSubtitleText:(NSString*)text {
 
@@ -102,13 +105,14 @@ public:
         button = [[NSButton alloc] init];
         button.bezelStyle = NSBezelStyleRegularSquare;
         [button setButtonType:NSButtonTypePushOnPushOff];
+        [button setAction:@selector(onBtnWordTap:)];
+        [button setTarget:self];
+
         
         button.title = str;
         [curHorizStackView addView:button inGravity:NSStackViewGravityCenter];
         
         [m_words_buttons addObject:button];
-        //[button setAction:@selector(onBtnWordTap:)];
-        //[button setTarget:self];
         
         if ([str containsString:@"\r"]) {
             NSString* s = [str stringByReplacingOccurrencesOfString:@"\r" withString:@""];
