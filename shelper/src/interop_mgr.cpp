@@ -14,19 +14,25 @@ void interop_mgr::init() {
     m_translator = std::make_shared<translator::lingualeo_translator>();
 }
 
+void interop_mgr::on_play() {
+    m_mc_adapter->play();
+}
+
 void interop_mgr::on_pause() {
     m_mc_adapter->pause();
 }
-void interop_mgr::on_resume() {
-    m_mc_adapter->play();
+
+void interop_mgr::on_stop() {
+    m_mc_adapter->stop();
 }
+
 void interop_mgr::on_seek() {
     
 }
 
 void interop_mgr::on_select_text(const std::string& text) {
     //on_pause();
-    if (m_translator && m_output) {
+    if (m_translator && m_output && text.size()) {
         translator::translation_cfg cfg;
         cfg.word = text;
         

@@ -26,6 +26,11 @@ public:
         m_mc_adapter = adapter;
     }
     
+    media_center::media_center_adapter_ptr get_media_center() {
+        return m_mc_adapter;
+    }
+    
+    
     void set_translator(const translator::translator_base_ptr& translator) {
         m_translator = translator;
     }
@@ -33,10 +38,12 @@ public:
     sub::subtitles_entry_ptr find_sub(const media_center::track_info& ti) const;
     void load_subtitles(const std::string& file);
     
+    
     // view events
     void on_select_text(const std::string& text);
+    void on_play();
+    void on_stop();
     void on_pause();
-    void on_resume();
     void on_seek();
 };
 using interop_mgr_ptr = std::shared_ptr<interop_mgr>;

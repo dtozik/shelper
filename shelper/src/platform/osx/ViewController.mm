@@ -52,7 +52,13 @@ public:
     m_interop_ptr->set_media_center(m_mc);
     
     m_mc->set_host("localhost:1234");
-            
+#ifdef TEST_SUB
+    NSBundle* bundle = [NSBundle mainBundle];
+    NSURL* pathToExample = [bundle URLForResource:@TEST_SUB withExtension:@""];
+    if (pathToExample != nil)
+        m_interop_ptr->load_subtitles([pathToExample.path UTF8String]);
+#endif
+
     [NSTimer scheduledTimerWithTimeInterval:0.05
       target:self
     selector:@selector(onTimer)
@@ -77,6 +83,16 @@ public:
     [alert runModal];
 }
 
+-(int)countPressedWordButtons {
+    int counter = 0;
+    for (NSButton* button in m_words_buttons) {
+        if (button.state == NSControlStateValueOn) {
+            counter++;
+        }
+    }
+    return counter;
+}
+
 -(void)onBtnWordTap:(NSButton*)btn {
     m_interop_ptr->on_pause();
 }
@@ -87,7 +103,6 @@ public:
     text = [text substringToIndex:[text length]-1];
     
     NSArray<NSString*>* array = [text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    //array = [array filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
     
     [m_words_buttons removeAllObjects];
     [self.m_vertStackSub.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
@@ -107,7 +122,6 @@ public:
         [button setButtonType:NSButtonTypePushOnPushOff];
         [button setAction:@selector(onBtnWordTap:)];
         [button setTarget:self];
-
         
         button.title = str;
         [curHorizStackView addView:button inGravity:NSStackViewGravityCenter];
@@ -126,14 +140,7 @@ public:
             if (i < [array count]-1)
                 [self.m_vertStackSub addView:curHorizStackView inGravity:NSStackViewGravityCenter];
         }
-
-        
-        
-        
-        //[self. addView:button inGravity:NSStackViewGravityCenter];
     }
-    
-    
 }
 
 
@@ -157,6 +164,22 @@ public:
         }
     }
     
-    m_interop_ptr->on_select_text(s);
+    if (s.size())
+        m_interop_ptr->on_select_text(s);
 }
+
+- (IBAction)onBtnPlayPause:(NSButton *)sender {
+    media_center::media_center_adapter_ptr adapter = m_interop_ptr->get_media_center();
+    if (adapter->is_playing()) {
+        m_interop_ptr->on_pause();
+    } else {
+        m_interop_ptr->on_play();
+    }
+}
+
+- (IBAction)onBtnStop:(NSButton *)sender {
+    m_interop_ptr->on_stop();
+}
+
+
 @end

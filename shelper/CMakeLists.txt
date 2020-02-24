@@ -51,6 +51,13 @@ if(TARGET_COCOA)
 	set(SOURCES ${SOURCES} ${SOURCES_GROUP_FILES})
 	source_group(platform FILES ${SOURCES_GROUP_FILES})
 
+	if (TEST_SUB)
+		message(STATUS "Test subtitles file: ${TEST_SUB}")
+		set (RESOURCES ${RESOURCES} 
+			assets/${TEST_SUB})
+		add_definitions(-DTEST_SUB="${TEST_SUB}")
+	endif()
+
 	set (RESOURCES ${RESOURCES} 
 		src/platform/osx/Assets.xcassets
 		src/platform/osx/Base.lproj/Main.storyboard

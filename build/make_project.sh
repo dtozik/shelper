@@ -27,7 +27,7 @@ fi
 cd $TARGET_PLATFORM
 
 if [[ $PLATFORM == "osx" ]]; then
-    cmake ../../../ -G "Xcode" -DTARGET_COCOA=1
+    cmake ../../../ -G "Xcode" -DTARGET_COCOA=1 -DTEST_SUB="shawshank.srt"
 fi
 
 
