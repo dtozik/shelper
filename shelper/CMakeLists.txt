@@ -24,6 +24,13 @@ set(SOURCES ${SOURCES} ${SOURCES_GROUP_FILES})
 set(HEADERS ${HEADERS} ${HEADERS_GROUP_FILES})	
 
 
+if (TEST_SUB)
+	message(STATUS "Test subtitles file: ${TEST_SUB}")
+	set (RESOURCES ${RESOURCES} 
+		assets/${TEST_SUB})
+	add_definitions(-DTEST_SUB="${TEST_SUB}")
+endif()
+
 include_directories(src 
 					src/media_center 
 					src/media_center/adapters
@@ -33,8 +40,48 @@ include_directories(src
 					src/translator/adapters
 					../common_libs/curlpp-0.8.1/include)
 
+# toolchains
+if(TARGET_IOS)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++")
 
-if(TARGET_COCOA)
+	set (SOURCES_GROUP_FILES
+		src/platform/ios/AppDelegate.mm
+		src/platform/ios/main.mm
+		src/platform/ios/ViewController.mm
+		src/platform/ios/AppDelegate.h
+		src/platform/ios/ViewController.h
+		src/platform/ios/SceneDelegate.h
+		src/platform/ios/SceneDelegate.mm
+	)	
+
+
+	set(SOURCES ${SOURCES} ${SOURCES_GROUP_FILES})
+	source_group(platform FILES ${SOURCES_GROUP_FILES})
+
+	set (RESOURCES ${RESOURCES} 
+		src/platform/ios/Assets.xcassets
+		src/platform/ios/Base.lproj/Main.storyboard
+		src/platform/ios/Base.lproj/LaunchScreen.storyboard)
+
+	set_source_files_properties(
+	 	${RESOURCES}
+	 	PROPERTIES
+	 	MACOSX_PACKAGE_LOCATION Resources)
+
+	set(CMAKE_EXE_LINKER_FLAGS "-framework AppKit")
+	add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${HEADERS} ${SOURCES} ${RESOURCES})
+
+	set_target_properties(${PROJECT_NAME} PROPERTIES
+	  #MACOSX_BUNDLE_GUI_IDENTIFIER ${PACKAGE_NAME}
+	  MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/ios/Info.plist
+	  RESOURCE "${RESOURCES}"
+	  XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES 
+	  XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym"
+	  XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER NO
+	  XCODE_ATTRIBUTE_INFOPLIST_PREPROCESS NO
+	)
+
+elseif(TARGET_OSX)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++")
 
 	set (SOURCES_GROUP_FILES
@@ -50,13 +97,6 @@ if(TARGET_COCOA)
 
 	set(SOURCES ${SOURCES} ${SOURCES_GROUP_FILES})
 	source_group(platform FILES ${SOURCES_GROUP_FILES})
-
-	if (TEST_SUB)
-		message(STATUS "Test subtitles file: ${TEST_SUB}")
-		set (RESOURCES ${RESOURCES} 
-			assets/${TEST_SUB})
-		add_definitions(-DTEST_SUB="${TEST_SUB}")
-	endif()
 
 	set (RESOURCES ${RESOURCES} 
 		src/platform/osx/Assets.xcassets
