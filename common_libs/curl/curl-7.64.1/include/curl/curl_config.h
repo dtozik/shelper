@@ -1056,7 +1056,7 @@
 /* the signed version of size_t */
 /* #undef ssize_t */
 
-#define OS "Darwin"
+#define OS "iOS"
 
 /* The size of `curl_off_t', as computed by sizeof. */
 #define SIZEOF_CURL_OFF_T 8

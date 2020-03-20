@@ -28,7 +28,7 @@ cd $TARGET_PLATFORM
 
 if [[ $PLATFORM == "osx" ]]; then
 	cmake ../../../ -G "Xcode" -DTARGET_IOS=1 -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
-	-DPLATFORM=OS64COMBINED
+	-DPLATFORM=SIMULATOR64
 
     #cmake ../../../ -G "Xcode" -DTARGET_IOS=1 -DTEST_SUB="shawshank.srt"
 fi

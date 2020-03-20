@@ -38,7 +38,8 @@ include_directories(src
 					src/output/adapters
 					src/translator
 					src/translator/adapters
-					../common_libs/curlpp-0.8.1/include)
+					../common_libs/curlpp-0.8.1/include
+					../common_libs/curl/curl-7.64.1/include)
 
 # toolchains
 if(TARGET_IOS)
@@ -68,11 +69,10 @@ if(TARGET_IOS)
 	 	PROPERTIES
 	 	MACOSX_PACKAGE_LOCATION Resources)
 
-	set(CMAKE_EXE_LINKER_FLAGS "-framework AppKit")
+	set(CMAKE_EXE_LINKER_FLAGS "-framework UIKit")
 	add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${HEADERS} ${SOURCES} ${RESOURCES})
 
 	set_target_properties(${PROJECT_NAME} PROPERTIES
-	  #MACOSX_BUNDLE_GUI_IDENTIFIER ${PACKAGE_NAME}
 	  MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/ios/Info.plist
 	  RESOURCE "${RESOURCES}"
 	  XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES 

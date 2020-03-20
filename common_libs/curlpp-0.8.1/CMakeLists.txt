@@ -69,6 +69,8 @@ add_subdirectory(extras)
 
 set(CURL_LIBRARIES curl)
 
+message (STATUS "curl ${CURL_INCLUDE_DIRS}")
+
 # All following targets should search these directories for headers
 include_directories( 
   ${CMAKE_CURRENT_SOURCE_DIR}/include

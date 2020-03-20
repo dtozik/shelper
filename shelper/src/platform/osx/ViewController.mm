@@ -12,10 +12,10 @@
 
 using namespace shelper;
 
-class ios_output : public output::base_output {
+class osx_output : public output::base_output {
     ViewController* m_ctrl;
 public:
-    ios_output(ViewController* ctrl) {
+    osx_output(ViewController* ctrl) {
         m_ctrl = ctrl;
     }
     void set_text(const std::string& text) override {
@@ -46,7 +46,7 @@ public:
     
     m_interop_ptr.reset(new interop_mgr());
     m_interop_ptr->init();
-    m_interop_ptr->set_output(std::make_shared<ios_output>(self));
+    m_interop_ptr->set_output(std::make_shared<osx_output>(self));
     
     m_mc = std::make_shared<media_center::kodi_adapter>();
     m_interop_ptr->set_media_center(m_mc);
