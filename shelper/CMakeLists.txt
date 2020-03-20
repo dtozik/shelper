@@ -41,7 +41,6 @@ include_directories(src
 					../common_libs/curlpp-0.8.1/include
 					../common_libs/curl/curl-7.64.1/include)
 
-# toolchains
 if(TARGET_IOS)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++")
 
@@ -124,7 +123,7 @@ elseif(TARGET_OSX)
 else()
 	set(SOURCES ${SOURCES} src/main.cpp)
 
-	add_executable(shelper ${SOURCES} ${HEADERS} ${RESOURCES})
+	add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})
 endif()
 
 

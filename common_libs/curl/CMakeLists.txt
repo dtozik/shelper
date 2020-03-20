@@ -8,6 +8,7 @@ set(CURL_LIBRARIES libcurl.a)
 
 include_directories(${CURL_DIR}/include) #openssl headers
 include_directories(${CURL_DIR}/include/curl) #curl_config
+message (status "OPENSSL_DIR ${OPENSSL_DIR}")
 include_directories(${OPENSSL_DIR}/include) #curl_config
 
 
