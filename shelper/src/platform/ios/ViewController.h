@@ -13,7 +13,15 @@
 {
     shelper::interop_mgr_ptr m_interop_ptr;
     shelper::media_center::media_center_adapter_ptr m_mc;
-    //NSMutableArray<NSButton*>* m_words_buttons;
+    NSMutableArray<UIButton*>* m_words_buttons;
 }
+@property (weak, nonatomic) IBOutlet UIStackView *m_vert_stack;
+
+@property (weak, nonatomic) IBOutlet UIView *outputView;
+
+-(void)onSubtitleText:(NSString*)text;
+-(void)onTranslateText:(NSString*)text;
+
+
 @end
 

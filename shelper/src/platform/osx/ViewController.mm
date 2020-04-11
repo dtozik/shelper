@@ -29,6 +29,7 @@ public:
 
 @implementation ViewController
 
+
 -(void)onTimer
 {
     static auto t0 = std::chrono::steady_clock::now();
@@ -83,16 +84,6 @@ public:
     [alert runModal];
 }
 
--(int)countPressedWordButtons {
-    int counter = 0;
-    for (NSButton* button in m_words_buttons) {
-        if (button.state == NSControlStateValueOn) {
-            counter++;
-        }
-    }
-    return counter;
-}
-
 -(void)onBtnWordTap:(NSButton*)btn {
     m_interop_ptr->on_pause();
 }
@@ -125,7 +116,6 @@ public:
         
         button.title = str;
         [curHorizStackView addView:button inGravity:NSStackViewGravityCenter];
-        
         [m_words_buttons addObject:button];
         
         if ([str containsString:@"\r"]) {

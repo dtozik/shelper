@@ -68,7 +68,8 @@ if(TARGET_IOS)
 	 	PROPERTIES
 	 	MACOSX_PACKAGE_LOCATION Resources)
 
-	set(CMAKE_EXE_LINKER_FLAGS "-framework UIKit")
+	set(CMAKE_EXE_LINKER_FLAGS "-framework UIKit
+								-framework CoreGraphics")
 	add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${HEADERS} ${SOURCES} ${RESOURCES})
 
 	set_target_properties(${PROJECT_NAME} PROPERTIES

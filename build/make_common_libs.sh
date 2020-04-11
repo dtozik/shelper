@@ -106,17 +106,15 @@ build_ios_ssl()
     cd ..
 }
 
-#build_ios_ssl "armv7"
-#build_ios_ssl "arm64"
-
-build_ios_ssl "x86_64"
+build_ios_ssl "arm64"
+#build_ios_ssl "x86_64"
 
 lipo \
-     "${LIBS}/libcrypto-x86_64.a" \
+     "${LIBS}/libcrypto-arm64.a" \
     -create -output "${LIBS}/libcrypto.a"
 
 lipo \
-     "${LIBS}/libssl-x86_64.a" \
+     "${LIBS}/libssl-arm64.a" \
     -create -output "${LIBS}/libssl.a"
 
 
@@ -132,7 +130,7 @@ cd common_libs/$TARGET_PLATFORM/curl
 cmake ../../../../../common_libs/curl -DUSE_OPENSSL=1 \
 -DOPENSSL_DIR="${CUR_DIR}/common_libs/$TARGET_PLATFORM/openssl/${OPENSSL_VERSION}" \
 -DCMAKE_TOOLCHAIN_FILE=$CUR_DIR/../toolchains/ios.toolchain.cmake \
-    -DPLATFORM=SIMULATOR64 -DSDK_VERSION=$SDK_VERSION
+    -DPLATFORM=OS -DSDK_VERSION=$SDK_VERSION
 
 make || exit 1
 cp -f *.a $LIBS
@@ -148,7 +146,7 @@ CURL_INCLUDE_PATH="${CUR_DIR}/../../common_libs/curl/curl-7.64.1/include"
 
 cmake ../../../../../common_libs/curlpp-0.8.1 -DCURL_INCLUDE_DIRS="${CURL_INCLUDE_PATH}" \
 -DCMAKE_TOOLCHAIN_FILE=$CUR_DIR/../toolchains/ios.toolchain.cmake \
-    -DPLATFORM=SIMULATOR64 -DSDK_VERSION=$SDK_VERSION
+    -DPLATFORM=OS -DSDK_VERSION=$SDK_VERSION
 make || exit 1
 cp -f *.a $LIBS
 cd $CUR_DIR
@@ -161,7 +159,7 @@ cd common_libs/$TARGET_PLATFORM/zlib
 
 cmake ../../../../../common_libs/zlib \
 -DCMAKE_TOOLCHAIN_FILE=$CUR_DIR/../toolchains/ios.toolchain.cmake \
-    -DPLATFORM=SIMULATOR64 -DSDK_VERSION=$SDK_VERSION
+    -DPLATFORM=OS -DSDK_VERSION=$SDK_VERSION
 
 make || exit 1
 cp -f *.a $LIBS
