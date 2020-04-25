@@ -15,7 +15,7 @@ public:
     bool play() const override;
     bool pause() const override;
     bool stop() const override;
-    bool seek() const override;
+    bool seek(const time::time_info& time) const override;
     bool is_playing() const override;
     bool get_player_info(player_info& info) const override;
     bool get_current_track_info(track_info& info) const override;

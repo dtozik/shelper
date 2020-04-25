@@ -3,6 +3,7 @@ set (SOURCES_GROUP_FILES
 		src/media_center/adapters/kodi_adapter.cpp
 		src/interop_mgr.cpp
 		src/subtitles/subtitles.cpp
+		src/subtitles/fetcher.cpp
 		src/translator/adapters/lingualeo.cpp
 	)
 
@@ -16,6 +17,7 @@ set (HEADERS_GROUP_FILES
 		src/output.h
 		src/time_routines.h
 		src/subtitles/subtitles.h
+		src/subtitles/fetcher.h
 		src/view.h
 		src/translator/translator.h
 	)
@@ -50,6 +52,8 @@ if(TARGET_IOS)
 		src/platform/ios/ViewController.mm
 		src/platform/ios/AppDelegate.h
 		src/platform/ios/ViewController.h
+		src/platform/ios/SelectSubVC.h
+		src/platform/ios/SelectSubVC.mm
 		src/platform/ios/SceneDelegate.h
 		src/platform/ios/SceneDelegate.mm
 	)	
@@ -79,6 +83,7 @@ if(TARGET_IOS)
 	  XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym"
 	  XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER NO
 	  XCODE_ATTRIBUTE_INFOPLIST_PREPROCESS NO
+	  target PROPERTIES XCODE_ATTRIBUTE_ENABLE_BITCODE NO
 	)
 
 elseif(TARGET_OSX)

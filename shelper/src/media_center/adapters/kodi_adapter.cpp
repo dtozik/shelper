@@ -130,8 +130,49 @@ bool kodi_adapter::stop() const {
     return false;
 
 }
-bool kodi_adapter::seek() const {
-    return false;
+bool kodi_adapter::seek(const time::time_info& time) const {
+	//{"jsonrpc":"2.0", "method":"Player.Seek", "params": { "playerid":1, "value":{ "seconds": 30 } }, "id":1}
+    player_info pi;
+    if (!get_player_info(pi)) {
+        std::cout << "kodi_adapter::seek coundn't get get_player_info" << std::endl;
+        return false;
+    }
+    
+    try {
+        DEFINE_REQUEST_HEADER()
+        {
+            json j;
+            j["jsonrpc"] = "2.0";
+            j["method"] = "Player.Seek";
+            json params;
+            params["playerid"] = pi.player_id;
+			
+			json value;
+			value["hours"] = time.hours.count();
+			value["minutes"] = time.mins.count();
+			value["seconds"] = time.secs.count();
+			value["milliseconds"] = time.ms.count();
+			params["value"] = value;
+			
+            j["params"] = params;
+            j["id"] = "1";
+            std::string field(j.dump());
+            request.setOpt(new curlpp::options::PostFields(field));
+            request.setOpt(new curlpp::options::PostFieldSize(field.size() + 1));
+        }
+        std::ostringstream os;
+        os << request;
+        json j = json::parse(os.str());
+        if (j.contains("error")) {
+            throw std::runtime_error(j["error"]["message"]);
+        }
+    }
+    catch ( std::exception& e ) {
+        std::cout << "couldn't call kodi_adapter::play_pause_impl, exception: " << e.what() << std::endl;
+        return false;
+    }
+    
+    return true;
 }
 
 bool kodi_adapter::get_player_info_impl(player_info& info) const {

@@ -2,6 +2,7 @@
 #define _INTEROP_MGR_H_
 
 #include <defs.h>
+#include "time_routines.h"
 
 namespace shelper {
 
@@ -15,6 +16,7 @@ class interop_mgr final {
     media_center::media_center_adapter_ptr  m_mc_adapter;
     sub::subtitles_ptr                      m_subtitles;
     translator::translator_base_ptr         m_translator;
+	sub::subtitles_entry_wptr				m_last_sub;
 public:
     void init();
     void handle_timer(long time_ms);
@@ -44,7 +46,9 @@ public:
     void on_play();
     void on_stop();
     void on_pause();
-    void on_seek();
+    void on_seek(const time::time_info& time);
+	void on_backward();
+	void on_forward();
 };
 using interop_mgr_ptr = std::shared_ptr<interop_mgr>;
 

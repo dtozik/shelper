@@ -15,6 +15,7 @@ bool subtitles::load_srt(const std::string& sub) {
     std::regex reg("((:|,)+| --> )");
     std::ifstream input(sub);
     std::string line;
+	subtitles_entry_wptr prev;
     while (std::getline(input, line)) {
         auto entry = std::make_shared<subtitles_entry>();
         { std::stringstream s(line); s >> entry->s_id;  }
@@ -40,6 +41,8 @@ bool subtitles::load_srt(const std::string& sub) {
             line = "";
         }
         
+		entry->prev = prev;
+		prev = entry;
         m_entries.push_back(std::move(entry));
     }
     

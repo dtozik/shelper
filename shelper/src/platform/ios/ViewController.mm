@@ -74,8 +74,27 @@ public:
     
     m_words_buttons = [[NSMutableArray alloc] init];
 
+	UISwipeGestureRecognizer* rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
+	[rightSwipe setDirection: UISwipeGestureRecognizerDirectionRight ];
+	[self.baseView addGestureRecognizer:rightSwipe];
+
+	UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+	[self.baseView addGestureRecognizer:singleFingerTap];
 }
 
+-(void)swipeRight:(UISwipeGestureRecognizer*)gesture {
+	m_interop_ptr->on_backward();
+}
+
+
+- (void)tap:(UITapGestureRecognizer *)recognizer {
+    media_center::media_center_adapter_ptr adapter = m_interop_ptr->get_media_center();
+    if (adapter->is_playing()) {
+        m_interop_ptr->on_pause();
+    } else {
+        m_interop_ptr->on_play();
+    }
+}
 
 -(void)onSubtitleText:(NSString*)text {
 

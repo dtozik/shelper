@@ -4,6 +4,7 @@
 #include <subtitles/subtitles.h>
 #include <output.h>
 #include <translator.h>
+#include <subtitles/fetcher.h>
 
 namespace shelper {
 
@@ -26,9 +27,50 @@ void interop_mgr::on_stop() {
     m_mc_adapter->stop();
 }
 
-void interop_mgr::on_seek() {
+void interop_mgr::on_seek(const time::time_info& time) {
     
 }
+
+void interop_mgr::on_backward() {
+	media_center::track_info ti;
+	if (m_mc_adapter->get_current_track_info(ti)) {
+		sub::subtitles_entry_ptr sub = find_sub(ti);
+		if (sub) {
+//			auto range = (sub->end.mins.count() + sub->end.secs.count()) -
+//				(sub->start.mins.count() + sub->start.secs.count());
+//			auto t = ti.current_time.secs.count() - sub->start.secs.count();
+//
+//			sub::subtitles_entry_wptr p;
+//			if (t / static_cast<double>(range) < 0.5) {
+//				p = p.lock()->prev;
+//			} else {
+//				p = sub;
+//			}
+			sub::subtitles_entry_wptr p = sub;
+			if (!sub->prev.expired())
+				p = sub->prev;
+			//if (m_output)
+			//	m_output->set_text(p.lock()->text);
+			time::time_info t = p.lock()->start;
+			t.secs = t.secs - std::chrono::seconds(2);
+			m_mc_adapter->seek(t);
+		} else {
+			if (!m_last_sub.expired()) {
+				auto last = m_last_sub.lock();
+				//if (m_output)
+				//	m_output->set_text(last->text);
+				time::time_info t = last->start;
+				t.secs = t.secs - std::chrono::seconds(2);
+				m_mc_adapter->seek(t);
+			}
+		}
+	}
+}
+
+
+void interop_mgr::on_forward() {
+}
+
 
 void interop_mgr::on_select_text(const std::string& text) {
     //on_pause();
@@ -53,7 +95,7 @@ void interop_mgr::load_subtitles(const std::string& file) {
 sub::subtitles_entry_ptr interop_mgr::find_sub(const media_center::track_info& ti) const {
     
     if (!m_subtitles)
-        return nullptr;
+        return sub::subtitles_entry_ptr();
         
 
     unsigned start = 0;
@@ -106,12 +148,10 @@ void interop_mgr::handle_timer(long time_ms) {
             
             sub::subtitles_entry_ptr sub = find_sub(ti);
             if (sub) {
-                static unsigned last_sub_id = std::numeric_limits<unsigned>::max();
-                if (sub->s_id != last_sub_id) {
-                 
+                if (m_last_sub.expired() || sub->s_id != m_last_sub.lock()->s_id) {
                     if (m_output)
                         m_output->set_text(sub->text);
-                    last_sub_id = sub->s_id;
+                    m_last_sub = sub;
                 }
             }
         }

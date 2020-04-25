@@ -54,7 +54,7 @@ public:
     virtual bool play() const = 0;
     virtual bool pause() const = 0;
     virtual bool stop() const = 0;
-    virtual bool seek() const = 0;
+    virtual bool seek(const time::time_info& time) const = 0;
     virtual bool is_playing() const = 0;
 };
 using media_center_adapter_ptr = std::shared_ptr<media_center_adapter>;

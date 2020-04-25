@@ -13,9 +13,11 @@ struct subtitles_entry {
     time::time_info start;
     time::time_info end;
     std::string text;
+	subtitles_entry_wptr prev;
     unsigned s_id;
 };
 using subtitles_entry_ptr = std::shared_ptr<subtitles_entry>;
+using subtitles_entry_wptr = std::weak_ptr<subtitles_entry>;
 using subtitles_entries_t = std::vector<subtitles_entry_ptr>;
 
 

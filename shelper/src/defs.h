@@ -26,6 +26,10 @@ using subtitles_ptr = std::shared_ptr<subtitles>;
 
 struct subtitles_entry;
 using subtitles_entry_ptr = std::shared_ptr<subtitles_entry>;
+using subtitles_entry_wptr = std::weak_ptr<subtitles_entry>;
+
+class fetcher;
+using subtitles_fetcher_ptr = std::shared_ptr<fetcher>;
 }
 
 namespace translator {
@@ -35,6 +39,11 @@ using translator_base_ptr = std::shared_ptr<translator_base>;
 
 class interop_mgr;
 using interop_mgr_ptr = std::shared_ptr<interop_mgr>;
+
+struct request_callbacks {
+	std::function<void()> complete;
+	std::function<void(int)> error;
+};
 
 }
 
