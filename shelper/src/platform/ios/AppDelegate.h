@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <app.h>
 
+using namespace shelper;
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
-
+{
+	std::shared_ptr<app> m_app;
+}
+-(std::shared_ptr<app>)app;
 
 @end
 

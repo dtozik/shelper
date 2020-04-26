@@ -1,13 +1,16 @@
 
 set (SOURCES_GROUP_FILES
+		src/app.cpp
 		src/media_center/adapters/kodi_adapter.cpp
 		src/interop_mgr.cpp
 		src/subtitles/subtitles.cpp
 		src/subtitles/fetcher.cpp
 		src/translator/adapters/lingualeo.cpp
+		src/downloader.cpp
 	)
 
 set (HEADERS_GROUP_FILES
+		src/app.h
 		src/json.hpp
 		src/ctpl_stl.h
 		src/media_center/media_center.h
@@ -20,6 +23,7 @@ set (HEADERS_GROUP_FILES
 		src/subtitles/fetcher.h
 		src/view.h
 		src/translator/translator.h
+		src/downloader.h
 	)
 
 set(SOURCES ${SOURCES} ${SOURCES_GROUP_FILES})

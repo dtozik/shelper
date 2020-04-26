@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import <kodi_adapter.h>
 #import <output.h>
+#include <downloader.h>
 
 using namespace shelper;
 
@@ -34,44 +35,17 @@ public:
 @implementation ViewController
 
 
--(void)onTimer
-{
-    static auto t0 = std::chrono::steady_clock::now();
-    auto t1 = std::chrono::steady_clock::now();
-    std::chrono::duration<double> fs = t1 - t0;
-    t0 = t1;
-    m_interop_ptr->handle_timer(std::chrono::duration_cast<std::chrono::milliseconds>(fs).count());
-}
-
 -(void)onBtnWordTap:(UIButton*)btn {
 	[btn setSelected:![btn isSelected]];
-    m_interop_ptr->on_pause();
+	[m_delegate app]->interop()->on_pause();
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    m_interop_ptr.reset(new interop_mgr());
-    m_interop_ptr->init();
-    m_interop_ptr->set_output(std::make_shared<ios_output>(self));
-    
-    m_mc = std::make_shared<media_center::kodi_adapter>();
-    m_interop_ptr->set_media_center(m_mc);
-    
-    m_mc->set_host("192.168.1.181:1234");
-#ifdef TEST_SUB
-    NSBundle* bundle = [NSBundle mainBundle];
-    NSURL* pathToExample = [bundle URLForResource:@TEST_SUB withExtension:@""];
-    if (pathToExample != nil)
-        m_interop_ptr->load_subtitles([pathToExample.path UTF8String]);
-#endif
-
-    [NSTimer scheduledTimerWithTimeInterval:0.05
-      target:self
-    selector:@selector(onTimer)
-    userInfo:nil
-     repeats:YES];
-    
+	
+    m_delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+	[m_delegate app]->interop()->set_output(std::make_shared<ios_output>(self));
+	
     m_words_buttons = [[NSMutableArray alloc] init];
 
 	UISwipeGestureRecognizer* rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
@@ -83,16 +57,16 @@ public:
 }
 
 -(void)swipeRight:(UISwipeGestureRecognizer*)gesture {
-	m_interop_ptr->on_backward();
+	[m_delegate app]->interop()->on_backward();
 }
 
 
 - (void)tap:(UITapGestureRecognizer *)recognizer {
-    media_center::media_center_adapter_ptr adapter = m_interop_ptr->get_media_center();
+    media_center::media_center_adapter_ptr adapter = [m_delegate app]->interop()->get_media_center();
     if (adapter->is_playing()) {
-        m_interop_ptr->on_pause();
+        [m_delegate app]->interop()->on_pause();
     } else {
-        m_interop_ptr->on_play();
+        [m_delegate app]->interop()->on_play();
     }
 }
 
@@ -158,16 +132,16 @@ public:
     }
 }
 - (IBAction)onPlayPauseBtn:(id)sender {
-    media_center::media_center_adapter_ptr adapter = m_interop_ptr->get_media_center();
+    media_center::media_center_adapter_ptr adapter = [m_delegate app]->interop()->get_media_center();
     if (adapter->is_playing()) {
-        m_interop_ptr->on_pause();
+        [m_delegate app]->interop()->on_pause();
     } else {
-        m_interop_ptr->on_play();
+        [m_delegate app]->interop()->on_play();
     }
 }
 
 - (IBAction)onStopBtn:(id)sender {
-	m_interop_ptr->on_stop();
+	[m_delegate app]->interop()->on_stop();
 }
 
 - (IBAction)onBtnTranslate:(id)sender {
@@ -184,7 +158,7 @@ public:
     }
     
     if (s.size())
-        m_interop_ptr->on_select_text(s);
+        [m_delegate app]->interop()->on_select_text(s);
 }
 
 -(void)onTranslateText:(NSString*)text {

@@ -55,24 +55,20 @@ using namespace shelper;
     return cell;
 }
 
-- (void)complete {
-	[self.m_table reloadData];
-}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == self.m_edit) {
         [textField resignFirstResponder];
 		
-		request_callbacks clbs;
+		sub::request_callbacks clbs;
 		clbs.complete = [self]() {
-			[self performSelectorOnMainThread:@selector(complete) withObject:nil waitUntilDone:NO];
+			[self.m_table reloadData];
 		};
 		clbs.error = [](auto) {
-			
+			assert(false);
 		};
+		
 		m_fetcher->request_subtitles_list([textField.text UTF8String], clbs);
-		
-		
         return NO;
     }
     return YES;

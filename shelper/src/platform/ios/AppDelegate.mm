@@ -7,16 +7,40 @@
 //
 
 #import "AppDelegate.h"
+#include <downloader.h>
+
+using namespace shelper;
 
 @interface AppDelegate ()
-
 @end
 
 @implementation AppDelegate
 
 
+-(std::shared_ptr<app>)app {
+	return self.app;
+}
+
+
+-(void)onTimer {
+    static auto t0 = std::chrono::steady_clock::now();
+    auto t1 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> fs = t1 - t0;
+    t0 = t1;
+    m_app->handle_timer(std::chrono::duration_cast<std::chrono::milliseconds>(fs).count());
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+		
+	auto downloader = std::make_shared<net::downloader>([](auto clb) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			clb();
+		});
+	});
+	
+	m_app = std::make_shared<app>(downloader);
+	m_app->init();
+	
     return YES;
 }
 

@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <interop_mgr.h>
+#import "AppDelegate.h"
 
 @interface ViewController : UIViewController
 {
-    shelper::interop_mgr_ptr m_interop_ptr;
-    shelper::media_center::media_center_adapter_ptr m_mc;
     NSMutableArray<UIButton*>* m_words_buttons;
+	AppDelegate* m_delegate;
 }
 @property (weak, nonatomic) IBOutlet UIStackView *m_vert_stack;
 

@@ -37,14 +37,18 @@ class translator_base;
 using translator_base_ptr = std::shared_ptr<translator_base>;
 }
 
+namespace net {
+class downloader;
+using downloader_ptr = std::shared_ptr<downloader>;
+}
+
 class interop_mgr;
 using interop_mgr_ptr = std::shared_ptr<interop_mgr>;
 
-struct request_callbacks {
-	std::function<void()> complete;
-	std::function<void(int)> error;
-};
+class app;
+using app_ptr = std::shared_ptr<app>;
 
 }
+
 
 #endif // _DEFS_H_
