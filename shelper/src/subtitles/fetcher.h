@@ -2,7 +2,6 @@
 #define _FETCHER_H_
 
 #include <defs.h>
-#include <downloader.h>
 
 namespace shelper {
 namespace sub {
@@ -27,6 +26,8 @@ public:
 public:
 	void request_subtitles_list(const std::string& name, const request_callbacks& clbs);
 	std::shared_ptr<subtitles_list> get_subtitles_list();
+	
+	void download_subtitle_data(const std::string& url, const request_callbacks& clbs);
 };
 using fetcher_ptr = std::shared_ptr<fetcher>;
 

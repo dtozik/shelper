@@ -6,7 +6,7 @@
 namespace shelper::net {
 
 struct request_callbacks {
-	std::function<void(char*)> complete;
+	std::function<void(const std::string&)> complete;
 	std::function<void(int)> error;
 };
 

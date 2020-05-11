@@ -7,6 +7,9 @@ set (SOURCES_GROUP_FILES
 		src/subtitles/fetcher.cpp
 		src/translator/adapters/lingualeo.cpp
 		src/downloader.cpp
+		src/fs/posix_file_system.cpp
+		src/zstr.hpp
+
 	)
 
 set (HEADERS_GROUP_FILES
@@ -24,6 +27,8 @@ set (HEADERS_GROUP_FILES
 		src/view.h
 		src/translator/translator.h
 		src/downloader.h
+		src/fs/file_system.h
+		src/fs/posix_file_system.h
 	)
 
 set(SOURCES ${SOURCES} ${SOURCES_GROUP_FILES})
@@ -45,7 +50,8 @@ include_directories(src
 					src/translator
 					src/translator/adapters
 					../common_libs/curlpp-0.8.1/include
-					../common_libs/curl/curl-7.64.1/include)
+					../common_libs/curl/curl-7.64.1/include
+					../common_libs/zlib/zlib-1.2.5)
 
 if(TARGET_IOS)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++")

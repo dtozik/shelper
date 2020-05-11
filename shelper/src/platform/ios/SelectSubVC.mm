@@ -25,11 +25,22 @@ using namespace shelper;
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     NSLog(@"Section:%d Row:%d selected and its data is %@",
           indexPath.section,indexPath.row,cell.textLabel.text);
+	
+	sub::request_callbacks clbs;
+	clbs.complete = [self]() {
+		
+	};
+	clbs.error = [](auto) {
+		assert(false);
+	};
+	
+	auto element = [m_delegate app]->fetcher()->get_subtitles_list()->at(indexPath.row);
+	[m_delegate app]->fetcher()->download_subtitle_data(element.url, clbs);
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:
 (NSInteger)section{
-	auto list = m_fetcher->get_subtitles_list();
+	auto list = [m_delegate app]->fetcher()->get_subtitles_list();
 	if (!list)
 		return 0;
 	auto size = list->size();
@@ -47,7 +58,7 @@ using namespace shelper;
                 UITableViewCellStyleDefault reuseIdentifier:cellId];
     }
 	
-	auto list = m_fetcher->get_subtitles_list();
+	auto list = [m_delegate app]->fetcher()->get_subtitles_list();
 	auto element = list->at(indexPath.row);
 	std::stringstream s;
 	s << element.name << ' ' << element.score;
@@ -68,8 +79,9 @@ using namespace shelper;
 			assert(false);
 		};
 		
-		m_fetcher->request_subtitles_list([textField.text UTF8String], clbs);
+		[m_delegate app]->fetcher()->request_subtitles_list([textField.text UTF8String], clbs);
         return NO;
+		//"https://dl.opensubtitles.org/en/download/src-api/vrf-19bc0c53/filead/1955363451.gz
     }
     return YES;
 }
@@ -77,9 +89,9 @@ using namespace shelper;
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	self.m_edit.delegate = self;
-	m_fetcher = std::make_shared<sub::fetcher>();
+	m_delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
 	
+	self.m_edit.delegate = self;
 	self.m_table.delegate = self;
 	self.m_table.dataSource = self;
 }

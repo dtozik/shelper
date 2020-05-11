@@ -20,18 +20,18 @@ class interop_mgr final {
 public:
     void init();
     void handle_timer(long time_ms);
-    void set_output(const output::output_ptr& output) {
+    
+	void set_output(const output::output_ptr& output) {
         m_output = output;
     }
-    
+
     void set_media_center(const media_center::media_center_adapter_ptr& adapter) {
-        m_mc_adapter = adapter;
+		m_mc_adapter = adapter;
     }
     
-    media_center::media_center_adapter_ptr get_media_center() {
+    media_center::media_center_adapter_ptr get_media_center() const {
         return m_mc_adapter;
     }
-    
     
     void set_translator(const translator::translator_base_ptr& translator) {
         m_translator = translator;

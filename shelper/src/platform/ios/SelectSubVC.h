@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#include <defs.h>
+#import "AppDelegate.h"
 
 @interface SelectSubVC : UIViewController<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 {
-	NSMutableArray *myArray;
-	shelper::sub::subtitles_fetcher_ptr m_fetcher;
+	NSMutableArray* myArray;
+	AppDelegate* m_delegate;
 }
 @property (weak, nonatomic) IBOutlet UITableView *m_table;
 @property (weak, nonatomic) IBOutlet UITextField *m_edit;

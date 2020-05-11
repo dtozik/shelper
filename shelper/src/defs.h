@@ -29,7 +29,7 @@ using subtitles_entry_ptr = std::shared_ptr<subtitles_entry>;
 using subtitles_entry_wptr = std::weak_ptr<subtitles_entry>;
 
 class fetcher;
-using subtitles_fetcher_ptr = std::shared_ptr<fetcher>;
+using fetcher_ptr = std::shared_ptr<fetcher>;
 }
 
 namespace translator {
@@ -40,6 +40,11 @@ using translator_base_ptr = std::shared_ptr<translator_base>;
 namespace net {
 class downloader;
 using downloader_ptr = std::shared_ptr<downloader>;
+}
+
+namespace fs {
+class file_system;
+using file_system_ptr = std::shared_ptr<file_system>;
 }
 
 class interop_mgr;

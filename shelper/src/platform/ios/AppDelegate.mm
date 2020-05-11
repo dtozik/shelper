@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #include <downloader.h>
+#include <fs/posix_file_system.h>
 
 using namespace shelper;
 
@@ -18,7 +19,7 @@ using namespace shelper;
 
 
 -(std::shared_ptr<app>)app {
-	return self.app;
+	return self->m_app;
 }
 
 
@@ -38,7 +39,24 @@ using namespace shelper;
 		});
 	});
 	
-	m_app = std::make_shared<app>(downloader);
+	NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+	NSString* cacheDirectory = [paths objectAtIndex:0];
+	
+	NSBundle* bundle = [NSBundle mainBundle];
+	NSString* data = [bundle resourcePath];
+	
+	paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
+														 NSUserDomainMask,
+														 YES);
+	NSString* profile_dir = [[paths objectAtIndex:0] stringByAppendingPathComponent:[bundle bundleIdentifier]];
+	
+	[[NSFileManager defaultManager] createDirectoryAtPath:profile_dir withIntermediateDirectories:YES attributes:nil error:nil];
+	
+	auto fs = std::make_shared<fs::posix_file_system>([cacheDirectory UTF8String],
+													  [data UTF8String],
+													  [profile_dir UTF8String]);
+	
+	m_app = std::make_shared<app>(downloader, fs);
 	m_app->init();
 	
     return YES;
