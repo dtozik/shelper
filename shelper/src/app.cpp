@@ -28,15 +28,7 @@ void app::init() {
 	auto mc = std::make_shared<media_center::kodi_adapter>();
 	m_interop->set_media_center(mc);
 
-	mc->set_host("192.168.1.181:1234");
-	
-//	#ifdef TEST_SUB
-//		NSBundle* bundle = [NSBundle mainBundle];
-//		NSURL* pathToExample = [bundle URLForResource:@TEST_SUB withExtension:@""];
-//		if (pathToExample != nil)
-//			m_interop_ptr->load_subtitles([pathToExample.path UTF8String]);
-//	#endif
-
+	mc->set_host("192.168.1.213:1234");
 }
 
 void app::handle_timer(long time_ms) {

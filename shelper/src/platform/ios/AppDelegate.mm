@@ -59,6 +59,8 @@ using namespace shelper;
 	m_app = std::make_shared<app>(downloader, fs);
 	m_app->init();
 	
+	[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(onTimer) userInfo:nil repeats:YES];
+	
     return YES;
 }
 

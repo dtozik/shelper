@@ -79,8 +79,9 @@ void interop_mgr::on_select_text(const std::string& text) {
         cfg.word = text;
         
         translator::translation_callbacks clbs;
-        clbs.complete = [&](const translator::translation_result& result) {
-            m_output->set_translation(result.base_json["translate"].at(0)["translate_value"]);
+        clbs.complete = [=](const translator::translation_result& result) {
+			auto current = m_last_sub.lock();
+			m_output->set_translation(text, result.base_json["translate"].at(0)["translate_value"], current ? current->text : "");
         };
         clbs.error = [](int err){};
         m_translator->translate(cfg, clbs);
@@ -138,6 +139,9 @@ sub::subtitles_entry_ptr interop_mgr::find_sub(const media_center::track_info& t
 
 void interop_mgr::handle_timer(long time_ms) {
     
+	if (!m_output)
+		return;
+	
     static int time_counter = 0;
     time_counter += time_ms == 0 ? 1 : time_ms;
     if (time_counter >= 50) {
@@ -149,8 +153,7 @@ void interop_mgr::handle_timer(long time_ms) {
             sub::subtitles_entry_ptr sub = find_sub(ti);
             if (sub) {
                 if (m_last_sub.expired() || sub->s_id != m_last_sub.lock()->s_id) {
-                    if (m_output)
-                        m_output->set_text(sub->text);
+                    m_output->set_text(sub->text);
                     m_last_sub = sub;
                 }
             }

@@ -13,7 +13,7 @@ struct subtitle_list_element {
 };
 
 struct request_callbacks {
-	std::function<void()> complete;
+	std::function<void(std::shared_ptr<char>)> complete;
 	std::function<void(int)> error;
 };
 
@@ -26,8 +26,7 @@ public:
 public:
 	void request_subtitles_list(const std::string& name, const request_callbacks& clbs);
 	std::shared_ptr<subtitles_list> get_subtitles_list();
-	
-	void download_subtitle_data(const std::string& url, const request_callbacks& clbs);
+	void request_subtitle_data(const std::string& url, const request_callbacks& clbs);
 };
 using fetcher_ptr = std::shared_ptr<fetcher>;
 

@@ -8,6 +8,7 @@
 
 #import "SelectSubVC.h"
 #include <subtitles/fetcher.h>
+#include <interop_mgr.h>
 
 using namespace shelper;
 
@@ -27,15 +28,18 @@ using namespace shelper;
           indexPath.section,indexPath.row,cell.textLabel.text);
 	
 	sub::request_callbacks clbs;
-	clbs.complete = [self]() {
+	clbs.complete = [self](auto text) {
+		[m_delegate app]->interop()->load_subtitles(text.get());
 		
+		//auto element = [m_delegate app]->interop()->fetcher()->get_subtitles_list()->at(indexPath.row);
+		[self performSegueWithIdentifier:@"qq" sender:self];
 	};
 	clbs.error = [](auto) {
 		assert(false);
 	};
 	
 	auto element = [m_delegate app]->fetcher()->get_subtitles_list()->at(indexPath.row);
-	[m_delegate app]->fetcher()->download_subtitle_data(element.url, clbs);
+	[m_delegate app]->fetcher()->request_subtitle_data(element.url, clbs);
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:
@@ -72,7 +76,7 @@ using namespace shelper;
         [textField resignFirstResponder];
 		
 		sub::request_callbacks clbs;
-		clbs.complete = [self]() {
+		clbs.complete = [self](auto) {
 			[self.m_table reloadData];
 		};
 		clbs.error = [](auto) {

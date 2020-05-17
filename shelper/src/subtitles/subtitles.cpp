@@ -13,7 +13,9 @@ bool subtitles::load_srt(const std::string& sub) {
     m_entries.reserve(2500); //average value of entries of regular movie
     
     std::regex reg("((:|,)+| --> )");
-    std::ifstream input(sub);
+    //std::ifstream input(sub);
+	std::istringstream input(sub);
+	
     std::string line;
 	subtitles_entry_wptr prev;
     while (std::getline(input, line)) {

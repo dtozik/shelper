@@ -41,7 +41,7 @@ bool kodi_adapter::play_pause_impl() const {
             j["id"] = "1";
             std::string field(j.dump());
             request.setOpt(new curlpp::options::PostFields(field));
-            request.setOpt(new curlpp::options::PostFieldSize(field.size() + 1));
+            request.setOpt(new curlpp::options::PostFieldSize(field.size()));
         }
         std::ostringstream os;
         os << request;
@@ -112,7 +112,7 @@ bool kodi_adapter::stop() const {
             j["id"] = "1";
             std::string field(j.dump());
             request.setOpt(new curlpp::options::PostFields(field));
-            request.setOpt(new curlpp::options::PostFieldSize(field.size() + 1));
+            request.setOpt(new curlpp::options::PostFieldSize(field.size()));
         }
         //request.setOpt(new curlpp::options::UserPwd("user:password"));
         std::ostringstream os;
@@ -158,7 +158,7 @@ bool kodi_adapter::seek(const time::time_info& time) const {
             j["id"] = "1";
             std::string field(j.dump());
             request.setOpt(new curlpp::options::PostFields(field));
-            request.setOpt(new curlpp::options::PostFieldSize(field.size() + 1));
+            request.setOpt(new curlpp::options::PostFieldSize(field.size()));
         }
         std::ostringstream os;
         os << request;
@@ -188,7 +188,7 @@ bool kodi_adapter::get_player_info_impl(player_info& info) const {
             j["id"] = "1";
             std::string field(j.dump());
             request.setOpt(new curlpp::options::PostFields(field));
-            request.setOpt(new curlpp::options::PostFieldSize(field.size() + 1));
+            request.setOpt(new curlpp::options::PostFieldSize(field.size()));
         }
         //request.setOpt(new curlpp::options::UserPwd("user:password"));
         std::ostringstream os;
@@ -252,7 +252,7 @@ bool kodi_adapter::get_current_track_info(track_info& info) const {
             j["id"] = "1";
             std::string field(j.dump());
             request.setOpt(new curlpp::options::PostFields(field));
-            request.setOpt(new curlpp::options::PostFieldSize(field.size() + 1));
+            request.setOpt(new curlpp::options::PostFieldSize(field.size()));
         }
         //request.setOpt(new curlpp::options::UserPwd("user:password"));
         std::ostringstream os;

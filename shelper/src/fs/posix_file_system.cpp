@@ -56,6 +56,9 @@ public:
 		}
 	}
 	void flush() override {
+		if (m_file) {
+			::fflush(m_file);
+		}
 	}
 	unsigned int write(const unsigned char* data, unsigned int size) override {
 		if (!m_file)

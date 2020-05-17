@@ -21,7 +21,7 @@
 @property (strong, nonatomic) IBOutlet UIView *baseView;
 
 -(void)onSubtitleText:(NSString*)text;
--(void)onTranslateText:(NSString*)text;
+-(void)onTranslateText:(NSString*)text translation:(NSString*)translation context:(NSString*)context;
 
 
 @end

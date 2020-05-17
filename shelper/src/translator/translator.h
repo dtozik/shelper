@@ -28,14 +28,19 @@ struct translation_callbacks {
 class translator_base {
 public:
     virtual bool translate(const translation_cfg& cfg, const translation_callbacks& clbs) = 0;
+	virtual bool store(const std::string& text, const std::string& value, const std::string& ctx) = 0;
 };
 using translator_base_ptr = std::shared_ptr<translator_base>;
 
 class lingualeo_translator final : public translator_base {
+	std::string m_cookie;
+private:
+	bool login();
 public:
     bool translate(const translation_cfg& cfg,
                    const translation_callbacks& clbs) override;
-
+	
+	bool store(const std::string& text, const std::string& value, const std::string& ctx) override;
 };
 
 

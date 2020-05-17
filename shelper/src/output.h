@@ -10,7 +10,7 @@ class base_output {
 public:
     virtual ~base_output() = default;
     virtual void set_text(const std::string& text) = 0;
-    virtual void set_translation(const std::string& text) = 0;
+    virtual void set_translation(const std::string& text, const std::string& translation, const std::string& context) = 0;
 };
 using output_ptr = std::shared_ptr<base_output>;
 
@@ -24,9 +24,9 @@ public:
         std::cout << "<<<<< subtitles" << std::endl;
     }
 
-    void set_translation(const std::string& text) override {
+    void set_translation(const std::string& text, const std::string& translation, const std::string& context) override {
         std::cout << ">>>>> translation" << std::endl;
-        std::cout << text << std::endl;
+        std::cout << text << " " << translation << " " << context << std::endl;
         std::cout << "<<<<< translation" << std::endl;
     }
 };

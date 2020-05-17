@@ -10,6 +10,7 @@
 #import <kodi_adapter.h>
 #import <output.h>
 #include <downloader.h>
+#include <translator.h>
 
 using namespace shelper;
 
@@ -23,8 +24,10 @@ public:
         [m_ctrl onSubtitleText:[NSString stringWithUTF8String:text.c_str()]];
     }
     
-    void set_translation(const std::string& text) override {
-        [m_ctrl onTranslateText:[NSString stringWithUTF8String:text.c_str()]];
+    void set_translation(const std::string& text, const std::string& translation, const std::string& context) override {
+        [m_ctrl onTranslateText:[NSString stringWithUTF8String:text.c_str()]
+					translation:[NSString stringWithUTF8String:translation.c_str()]
+					context:[NSString stringWithUTF8String:context.c_str()]];
     }
 };
 
@@ -38,6 +41,10 @@ public:
 -(void)onBtnWordTap:(UIButton*)btn {
 	[btn setSelected:![btn isSelected]];
 	[m_delegate app]->interop()->on_pause();
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+	[m_delegate app]->interop()->set_output(nullptr);
 }
 
 - (void)viewDidLoad {
@@ -161,9 +168,9 @@ public:
         [m_delegate app]->interop()->on_select_text(s);
 }
 
--(void)onTranslateText:(NSString*)text {
-	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
-							   message:text
+-(void)onTranslateText:(NSString*)text translation:(NSString*)translation context:(NSString*)context {
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:text
+							   message:translation
 							   preferredStyle:UIAlertControllerStyleAlert];
 
 	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
@@ -172,8 +179,20 @@ public:
 			[button setSelected:NO];
 		}
 	}];
+	
+	std::string txt = [text UTF8String];
+	std::string trans = [translation UTF8String];
+	std::string ctx = [context UTF8String];
+	UIAlertAction* addToDict = [UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault
+								   handler:^(UIAlertAction * action) {
+		for (UIButton* button in m_words_buttons) {
+			[button setSelected:NO];
+		}
+		[m_delegate app]->interop()->get_translator()->store(txt, trans, ctx);
+	}];
 
 	[alert addAction:defaultAction];
+	[alert addAction:addToDict];
 	[self presentViewController:alert animated:YES completion:nil];
 }
 
