@@ -3,6 +3,7 @@
 #include <media_center/adapters/kodi_adapter.h>
 #include <interop_mgr.h>
 #include <subtitles/fetcher.h>
+#include <user_config.h>
 
 using namespace shelper;
 
@@ -28,7 +29,7 @@ void app::init() {
 	auto mc = std::make_shared<media_center::kodi_adapter>();
 	m_interop->set_media_center(mc);
 
-	mc->set_host("192.168.1.181:1234");
+	mc->set_host(KODI_ADDRESS);
 }
 
 void app::handle_timer(long time_ms) {
