@@ -28,7 +28,7 @@ void app::init() {
 	auto mc = std::make_shared<media_center::kodi_adapter>();
 	m_interop->set_media_center(mc);
 
-	mc->set_host("192.168.1.213:1234");
+	mc->set_host("192.168.1.181:1234");
 }
 
 void app::handle_timer(long time_ms) {
