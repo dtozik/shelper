@@ -3,3 +3,4 @@
 build/projects
 .DS_Store
 common_libs/openssl
+user_config.h

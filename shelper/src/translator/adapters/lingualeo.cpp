@@ -5,6 +5,7 @@
 #include <curlpp/Exception.hpp>
 #include <curlpp/Infos.hpp>
 #include <json.hpp>
+#include <user_config.h>
 
 namespace shelper { namespace translator {
 
@@ -79,8 +80,8 @@ bool lingualeo_translator::login() {
 		header.push_back("content-type: application/json;");
 		request.setOpt(new curlpp::options::HttpHeader(header));
 		json j;
-		j["email"] = "";
-		j["password"] = "";
+		j["email"] = EMAIL;
+		j["password"] = PASSWORD;
 		std::string field(j.dump());
 		//std::cout << j.dump();
 		request.setOpt(new curlpp::options::PostFields(field));
